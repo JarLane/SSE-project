@@ -17,4 +17,4 @@ except Exception as e:
         json_data = {'Error' : str(e)}
         json.dump(json_data, file, indent=2)
     with zipfile.ZipFile(zipPath,"w") as zip:
-        zip.write(zipPath)
+        zip.write(path)
