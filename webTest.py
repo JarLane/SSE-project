@@ -10,10 +10,10 @@ def index():
     if request.method == 'GET':
         if counter % 2 == 0:
             counter += 1
-            return jsonify({'msg': 'even'}), 200
+            return jsonify({'msg': 'all is good'}), 200
         elif counter % 2 == 1:
             counter += 1
-            return jsonify({'msg': 'odd'}), 400
+            return jsonify({'msg': 'there is a problem'}), 400
 
 
 if __name__ == '__main__':
