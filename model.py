@@ -74,7 +74,7 @@ app_settings = {
     "url": "https://localhost:33333",
     "email": "user@example.com",
     "time_setting": "1",
-    "run": "false"
+    "run": ""
 }
 
 json_data = json.dumps(app_settings, indent=4)
@@ -88,3 +88,5 @@ def running():
             ping()
             check_certificate_expiry(app_settings["url"])
             time.sleep((time_setting * 60))
+    else:
+        print("Goodbye")
