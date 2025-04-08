@@ -9,12 +9,9 @@ def ask_if_ready():
 
 
     if response:
-        app_settings["run"] = True
-        running()
-    root = tk.Tk()
-    root.withdraw()
-    ask_if_ready()
-    root.mainloop()
+        app_settings["run"] = "true"
+
+
 
 #def main_window():
 #    mainroot = tk.Tk()
