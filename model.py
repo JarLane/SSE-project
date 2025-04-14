@@ -11,8 +11,12 @@ from datetime import datetime, timezone
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import time
-
-
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+import os
 
 url = "https://localhost:33333"
 
@@ -44,6 +48,7 @@ def check_certificate_expiry(url):
                     json.dump(json_data, file, indent=2)
                 with zipfile.ZipFile(zipPath, "w") as zip:
                     zip.write(path)
+                    email(path)
 
 
             else:
@@ -68,13 +73,45 @@ def ping():
             json.dump(json_data, file, indent=2)
         with zipfile.ZipFile(zipPath,"w") as zip:
             zip.write(path)
+            email(path)
+
+def email(path):
+
+    message = MIMEMultipart()
+    message['From'] = app_settings["sender"]
+    message['To'] = app_settings["email"]
+    message['Subject'] = "Server monitering status update"
+    message.attach(MIMEText("The attached secure file holds the error report from the server response", 'plain'))
+    attachment_name = os.path.basename(path)
+    with open(path, "rb") as attachment:
+        part = MIMEBase("application", "octet-stream")
+        part.set_payload(attachment.read())
+
+    encoders.encode_base64(part)
+    part.add_header("Error Log", f"attachment; filename= {attachment_name}")
+
+    message.attach(part)
+
+    server = smtplib.SMTP(app_settings['smtp'], 587)
+    try:
+        server.starttls()
+        server.login(app_settings["sender"], app_settings["password"])
+        server.sendmail(app_settings['sender'], app_settings['email'], message.as_string())
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        server.quit()
 
 
 app_settings = {
     "url": "https://localhost:33333",
-    "email": "user@example.com",
+    "email": "epayyzproject@yahoo.com",
     "time_setting": "1",
-    "run": ""
+    "run": "",
+    "sender": "epayyproject@yahoo.com",
+    #the password needs to be replaced, however yahoo services are down. once thats fixed it should work
+    "password": "ProjectPass0)",
+    "smtp": "smtp.mail.yahoo.com"
 }
 
 json_data = json.dumps(app_settings, indent=4)
