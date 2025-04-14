@@ -17,6 +17,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import os
+from oauthlib.oauth2 import WebApplicationClient
 
 url = "https://localhost:33333"
 
@@ -48,7 +49,7 @@ def check_certificate_expiry(url):
                     json.dump(json_data, file, indent=2)
                 with zipfile.ZipFile(zipPath, "w") as zip:
                     zip.write(path)
-                    email(path)
+                    email()
 
 
             else:
@@ -73,22 +74,23 @@ def ping():
             json.dump(json_data, file, indent=2)
         with zipfile.ZipFile(zipPath,"w") as zip:
             zip.write(path)
-            email(path)
+            email()
 
-def email(path):
+def email():
 
     message = MIMEMultipart()
     message['From'] = app_settings["sender"]
     message['To'] = app_settings["email"]
     message['Subject'] = "Server monitering status update"
     message.attach(MIMEText("The attached secure file holds the error report from the server response", 'plain'))
+    path = "alert.zip"
     attachment_name = os.path.basename(path)
     with open(path, "rb") as attachment:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(attachment.read())
 
     encoders.encode_base64(part)
-    part.add_header("Error Log", f"attachment; filename= {attachment_name}")
+    part.add_header("Content-Disposition", f"attachment; filename= Errorlog.zip")
 
     message.attach(part)
 
@@ -105,13 +107,12 @@ def email(path):
 
 app_settings = {
     "url": "https://localhost:33333",
-    "email": "epayyzproject@yahoo.com",
+    "email": "epayyzproject@gmail.com",
     "time_setting": "1",
     "run": "",
-    "sender": "epayyproject@yahoo.com",
-    #the password needs to be replaced, however yahoo services are down. once thats fixed it should work
-    "password": "ProjectPass0)",
-    "smtp": "smtp.mail.yahoo.com"
+    "sender": "epayyzproject@gmail.com",
+    "password": "zenq qnpk xxej wbuv",
+    "smtp": "smtp.gmail.com"
 }
 
 json_data = json.dumps(app_settings, indent=4)
